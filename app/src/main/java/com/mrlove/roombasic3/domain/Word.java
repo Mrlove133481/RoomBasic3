@@ -14,7 +14,7 @@ public class Word {
     @ColumnInfo(name = "word")
     private String word;
     private String chineseMeaning;
-
+    private String version;
     //必须指定一个构造方法，room框架需要。并且只能指定一个
     //，如果有其他构造方法，则其他的构造方法必须添加@Ignore注解
     public Word(String word, String chineseMeaning) {
@@ -22,6 +22,14 @@ public class Word {
         this.chineseMeaning = chineseMeaning;
     }
     //Setter、Getter方法是需要添加的，为了支持room工作
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public int getId() {
         return id;
