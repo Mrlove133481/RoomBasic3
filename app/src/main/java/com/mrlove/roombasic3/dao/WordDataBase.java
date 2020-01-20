@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.mrlove.roombasic3.domain.Word;
 
 //配置你要操作的entry类，可以配置一个或者多个，version表名这个是哪个版本，如果升级需要修改的就是这里
-@Database(entities = {Word.class}, version = 2) //exportSchema 默认为true，存储展示数据库的结构信息
+@Database(entities = {Word.class}, version = 3) //exportSchema 默认为true，存储展示数据库的结构信息
 public abstract class WordDataBase extends RoomDatabase {
     //singleton
     private static WordDataBase wordDataBase;  //单例模式，保证获取的数据库实例是唯一的
@@ -26,7 +26,7 @@ public abstract class WordDataBase extends RoomDatabase {
                     // .allowMainThreadQueries()
                     //.fallbackToDestructiveMigration() 不保留数据，迁移数据
                     //保留数据迁移
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .build();
         }
         return wordDataBase;
@@ -39,6 +39,18 @@ public abstract class WordDataBase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE word ADD COLUMN version TEXT");
+        }
+    };
+    //sqlite没有字段的删除，所以只能通过数据的父子到新表的方式实现字段的删除
+    static final Migration MIGRATION_2_3 = new Migration(2,3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //首先创建一个新表word_temp，然后把要保留的字段数据填充到新表中，删除旧表，重命名新表名，完成想要数据的迁移
+            database.execSQL("CREATE TABLE word_temp (id INTEGER PRIMARY KEY NOT NULL ,word TEXT,chineseMeaning TEXT)");
+            database.execSQL("INSERT INTO word_temp(id,word,chineseMeaning)" +
+                    "SELECT id,word,chineseMeaning FROM word");
+            database.execSQL("DROP TABLE word");
+            database.execSQL("ALTER TABLE word_temp RENAME TO word");
         }
     };
 }
