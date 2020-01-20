@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">RoomBasic3</string>
+    <string name="textview">TextView</string>
+    <string name="buttoninsert">insert</string>
+    <string name="buttonupdate">update</string>
+    <string name="buttonclear">clear</string>
+    <string name="buttondelete">delete</string>
+    <string name="textnumber">1</string>
+    <string name="textEnglish">English</string>
+    <string name="textChinese">中文</string>
+    <string name="Imgarrow">arrow</string>
+    <string name="text_switch">布局开关</string>
+</resources>
