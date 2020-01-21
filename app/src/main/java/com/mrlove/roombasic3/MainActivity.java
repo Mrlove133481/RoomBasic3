@@ -1,6 +1,7 @@
 package com.mrlove.roombasic3;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -31,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         myViewModel = new ViewModelProvider(this, new SavedStateViewModelFactory(getApplication(), this)).get(MyViewModel.class);
         //为布局文件设置源数据
         binding.setData(myViewModel);
-        myAdapternormal = new MyAdapter(false);
-        myAdaptercard = new MyAdapter(true);
+        myAdapternormal = new MyAdapter(false,myViewModel);
+        myAdaptercard = new MyAdapter(true,myViewModel);
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerview.setAdapter(myAdapternormal);
 
@@ -51,10 +52,16 @@ public class MainActivity extends AppCompatActivity {
         myViewModel.getAllWordsLive().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
+                int temp = myAdaptercard.getItemCount();
+                int temp1 = myAdapternormal.getItemCount();
                 myAdaptercard.setAllWords(words);
-                myAdaptercard.notifyDataSetChanged();
                 myAdapternormal.setAllWords(words);
-                myAdapternormal.notifyDataSetChanged();
+                //当适配当前加载内容与现在数据大小不相等时刷新，这样可以避免在隐藏或开启数据时重复刷新数据造成界面卡顿
+                if(temp!=words.size()||temp1!=words.size()){
+                    myAdaptercard.notifyDataSetChanged();
+                    myAdapternormal.notifyDataSetChanged();
+                }
+
             }
         });
         //添加

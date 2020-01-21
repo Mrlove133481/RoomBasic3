@@ -20,7 +20,7 @@ public class WordRepository {
         //获取数据库操作dao的实例
         wordDao = wordDataBase.getWordDao();
         //获取数据库的所有数据
-        //LiveData格式的数据在获取时,系统自动会调用Async来处理
+        //LiveData格式的数据在获取时,系统自动会调用AsyncTask方式来处理
         allWordsLive = wordDao.getAllWords();
     }
     //为实现AsyncTask静态内部类提供访问的接口

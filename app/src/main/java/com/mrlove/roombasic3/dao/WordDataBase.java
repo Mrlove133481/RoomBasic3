@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.mrlove.roombasic3.domain.Word;
 
 //配置你要操作的entry类，可以配置一个或者多个，version表名这个是哪个版本，如果升级需要修改的就是这里
-@Database(entities = {Word.class}, version = 3) //exportSchema 默认为true，存储展示数据库的结构信息
+@Database(entities = {Word.class}, version = 4) //exportSchema 默认为true，存储展示数据库的结构信息
 public abstract class WordDataBase extends RoomDatabase {
     //singleton
     private static WordDataBase wordDataBase;  //单例模式，保证获取的数据库实例是唯一的
@@ -26,7 +26,7 @@ public abstract class WordDataBase extends RoomDatabase {
                     // .allowMainThreadQueries()
                     //.fallbackToDestructiveMigration() 不保留数据，迁移数据
                     //保留数据迁移
-                    .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_3_4)
                     .build();
         }
         return wordDataBase;
@@ -51,6 +51,13 @@ public abstract class WordDataBase extends RoomDatabase {
                     "SELECT id,word,chineseMeaning FROM word");
             database.execSQL("DROP TABLE word");
             database.execSQL("ALTER TABLE word_temp RENAME TO word");
+        }
+    };
+
+    static final Migration MIGRATION_3_4 = new Migration(3,4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE word ADD COLUMN invisible INTEGER NOT NULL DEFAULT 0");
         }
     };
 }
