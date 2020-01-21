@@ -14,6 +14,7 @@ android {
         //提供dataBinding的支持
         dataBinding.enabled true
         //配置当Database中exportSchema=true时，生成的数据结构文件存储位置。
+        //这里将存放每次版本升级时，数据结构的变动
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments =["room.schemaLocation":"$projectDir/schemas".toString()]
