@@ -49,6 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //RecyclerView中调用Databinding，绑定布局，获取binding实例
         //根据标识位初始化获取不同的binding
+        Log.d(TAG,"onCreateViewHolder");
         if (useCardView) {
             cardBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.cell_card2, parent, false);
             //把binding作为参数，返回一个自定义的MyViewHolder
@@ -63,21 +64,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     //当调用ViewHolder时响应
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+        Log.d(TAG,"onBindViewHolder");
         //获取当前位置的一行数据
         final Word word = allWords.get(position);
         //设置数据
         holder.textNumber.setText(String.valueOf(position + 1)); //让页面显示从1开始，而不用显示word.getId数据库中实际的位置
         holder.textEnglish.setText(word.getWord());
         holder.textChinese.setText(word.getChineseMeaning());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri uri = Uri.parse("https://m.youdao.com/dict?le=eng&q=" + holder.textEnglish.getText());
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(uri);
-                holder.itemView.getContext().startActivity(intent);
-            }
-        });
+
         //先初始化按钮的点击事件为空，再初始化释义以及按钮的状态；
         //如果不先置为空，RecyclerView有数据回收重复使用的功能，会导致在页面数据滚出屏幕外，
         //又滚回来时，造成点击事件还存在，从而自动再执行，这样就会让初始化释义以及按钮的状态时
@@ -125,11 +119,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         //两种参数不同的构造函数初始化不同的布局控件
         MyViewHolder(@NotNull CellNormal2Binding binding) {
             super(binding.getRoot());
+            Log.d(TAG,"MyViewHolder");
             normalBinding = binding;
             textNumber = normalBinding.textNumber;
             textEnglish = normalBinding.textEnglish;
             textChinese = normalBinding.textChinese;
             aSwitch = normalBinding.switchbutton;
+            binding.getRoot().setOnClickListener(OnClickListener());
         }
 
         MyViewHolder(@NotNull CellCard2Binding binding) {
@@ -139,6 +135,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             textEnglish = cardBinding.textEnglish;
             textChinese = cardBinding.textChinese;
             aSwitch = cardBinding.switchbutton;
+            binding.getRoot().setOnClickListener(OnClickListener());
         }
+
+        public View.OnClickListener OnClickListener(){
+            Log.d(TAG,"OnClickListener");
+           return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri uri = Uri.parse("https://m.youdao.com/dict?le=eng&q=" +textEnglish.getText());
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                   view.getContext().startActivity(intent);
+                }
+            };
+        }
+
     }
 }

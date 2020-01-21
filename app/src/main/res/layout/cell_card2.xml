@@ -8,7 +8,7 @@
               name="data"
               type="com.mrlove.roombasic3.MyViewModel" />
     </data>
-
+    <!--android:clickable="true" 实现元素的可点击，并且只能设置在这里，不能设置在里面的布局上，或者都设置-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
